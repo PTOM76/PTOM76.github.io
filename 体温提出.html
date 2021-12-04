@@ -96,5 +96,19 @@
       <option value="50">50番</option>
     </select>
     <br />
+    <button id="issue" onClick="setIssue()"></button>
+    <textarea id="issueUrl" name="issueUrl">
+    </textarea>
+    <script>
+      function setIssue() {
+        const grades = document.getElementById("grade");
+        url.searchParams.append('grade', grades.options[grades.selectedIndex].value);
+        const classes = document.getElementById("class");
+        url.searchParams.append('class', classes.options[grades.selectedIndex].value);
+        const numbers = document.getElementById("number");
+        url.searchParams.append('number', classes.options[numbers.selectedIndex].value);
+        document.getElementById("issueUrl").value = url.toString();
+      }
+    </script>
   </body>
 </html>
