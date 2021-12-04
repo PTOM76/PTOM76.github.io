@@ -1,113 +1,148 @@
+<!DOCTYPE html>
 <html>
-  <head>
-  </head>
-  <body>
-    <script>
-    function halfToFull(str) {
-      return str.replace(/[A-Za-z0-9]/g, function(s) {
-        return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
-    });
-    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScXMomarr6r-s6NK67yLKxiNwtOpIzxdz8cxHnuyDKy_s04og/viewform?usp=sf_link";
-    var url = new URL(window.location.href);
-    var params = url.searchParams;
-    if (params.has('grade') && params.has('class') && params.has('number')) {
-      formUrl = formUrl + "&entry.1457813128=" + encodeURIComponent("第" + halfToFull(params.get('grade')) + "学年");
-      formUrl = formUrl + "&entry.1266000826=" + encodeURIComponent(halfToFull(params.get('class')) + "組");
-      formUrl = formUrl + "&entry.1498034189=" + encodeURIComponent(halfToFull(params.get('number')));
-      if (params.has('temp')) 
-        formUrl = formUrl + "&entry.672110885=" + encodeURIComponent(params.get('temp') + "℃");
-      formUrl = formUrl + "&entry.1386191178_month=" + (today.getMonth() + 1);
-      formUrl = formUrl + "&entry.1386191178_day=" + (today.getDate());
-      formUrl = formUrl + "&entry.1282766902=" + encodeURIComponent("該当するものがない");
-      location.href = formUrl;
-    }
-    </script>
-    <h1>URL発行</h1>
-    学年: <select name="grades" id="grade">
-      <option value="">選択</option>
-      <option value="1">1年</option>
-      <option value="2">2年</option>
-      <option value="3">3年</option>
-    </select>
-    <br />
-    組: <select name="classes" id="class">
-      <option value="">選択</option>
-      <option value="1">1組</option>
-      <option value="2">2組</option>
-      <option value="3">3組</option>
-      <option value="4">4組</option>
-      <option value="5">5組</option>
-      <option value="6">6組</option>
-      <option value="7">7組</option>
-      <option value="8">8組</option>
-    </select>
-    <br />
-    出席番号: <select name="numbers" id="number">
-      <option value="">選択</option>
-      <option value="1">1番</option>
-      <option value="2">2番</option>
-      <option value="3">3番</option>
-      <option value="4">4番</option>
-      <option value="5">5番</option>
-      <option value="6">6番</option>
-      <option value="7">7番</option>
-      <option value="8">8番</option>
-      <option value="9">9番</option>
-      <option value="10">10番</option>
-      <option value="11">11番</option>
-      <option value="12">12番</option>
-      <option value="13">13番</option>
-      <option value="14">14番</option>
-      <option value="15">15番</option>
-      <option value="16">16番</option>
-      <option value="17">17番</option>
-      <option value="18">18番</option>
-      <option value="19">19番</option>
-      <option value="20">20番</option>
-      <option value="21">21番</option>
-      <option value="22">22番</option>
-      <option value="23">23番</option>
-      <option value="24">24番</option>
-      <option value="25">25番</option>
-      <option value="26">26番</option>
-      <option value="27">27番</option>
-      <option value="28">28番</option>
-      <option value="29">29番</option>
-      <option value="30">30番</option>
-      <option value="31">31番</option>
-      <option value="32">32番</option>
-      <option value="33">33番</option>
-      <option value="34">34番</option>
-      <option value="35">35番</option>
-      <option value="36">36番</option>
-      <option value="37">37番</option>
-      <option value="38">38番</option>
-      <option value="39">39番</option>
-      <option value="40">40番</option>
-      <option value="41">41番</option>
-      <option value="42">42番</option>
-      <option value="43">43番</option>
-      <option value="44">44番</option>
-      <option value="45">45番</option>
-      <option value="46">46番</option>
-      <option value="47">47番</option>
-      <option value="48">48番</option>
-      <option value="49">49番</option>
-      <option value="50">50番</option>
-    </select>
-    <br />
-    <input type="button" id="issue" onClick="setIssue()" value="発行">発行</input>
-    <textarea id="issueUrl" name="issueUrl"></textarea>
-    <script>
-      function setIssue() {
-        const grades = document.getElementById("grade");
-        url.searchParams.append('grade', grades.options[grades.selectedIndex].value);
-        const classes = document.getElementById("class");
-        url.searchParams.append('class', classes.options[grades.selectedIndex].value);
-        const numbers = document.getElementById("number");
-        url.searchParams.append('number', classes.options[numbers.selectedIndex].value);
-        document.getElementById("issueUrl").value = url.toString();
-      }
-    </script>
-  </body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>体温提出URL生成ツール</title>
+	</head>
+	<body>
+		<script>
+		function halfToFull(str) {
+			return str.replace(/[A-Za-z0-9]/g, function(s) {
+				return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+			});
+		}
+		function randInt(min,max) {
+			return Math.floor((Math.random() * (max - min)) + min);
+		}
+		var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScXMomarr6r-s6NK67yLKxiNwtOpIzxdz8cxHnuyDKy_s04og/viewform?usp=sf_link";
+		var url = new URL(window.location.href);
+		var params = url.searchParams;
+		if (params.has('grade') && params.has('class') && params.has('number')) {
+			formUrl = formUrl + "&entry.1457813128=" + encodeURIComponent("第" + halfToFull(params.get('grade')) + "学年");
+			formUrl = formUrl + "&entry.1266000826=" + encodeURIComponent(halfToFull(params.get('class')) + "組");
+			formUrl = formUrl + "&entry.1498034189=" + encodeURIComponent(halfToFull(params.get('number')));
+			if (params.has('temp')) 
+				formUrl = formUrl + "&entry.672110885=" + encodeURIComponent(params.get('temp') + "℃");
+			else if (params.has('randTemp')) {
+				if (params.get('randTemp') == "true") {
+					formUrl = formUrl + "&entry.672110885=" + encodeURIComponent((36.1 + randInt(0, 7) / 10) + "℃");
+				}
+			}
+			var today = new Date();
+			formUrl = formUrl + "&entry.1386191178=" + today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+			formUrl = formUrl + "&entry.1386191178_month=" + (today.getMonth() + 1);
+			formUrl = formUrl + "&entry.1386191178_day=" + (today.getDate());
+			formUrl = formUrl + "&entry.1282766902=" + encodeURIComponent("該当するものがない");
+			location.href = formUrl;
+		}
+		</script>
+		<h1>〇〇〇高校体温提出のURL生成</h1>
+		学年: <select name="grades" id="grade">
+			<option value="">選択</option>
+			<option value="1">1年</option>
+			<option value="2">2年</option>
+			<option value="3">3年</option>
+		</select>
+		<br />
+		組: <select name="classes" id="class">
+			<option value="">選択</option>
+			<option value="1">1組</option>
+			<option value="2">2組</option>
+			<option value="3">3組</option>
+			<option value="4">4組</option>
+			<option value="5">5組</option>
+			<option value="6">6組</option>
+			<option value="7">7組</option>
+			<option value="8">8組</option>
+		</select>
+		<br />
+		出席番号: <select name="numbers" id="number">
+			<option value="">選択</option>
+			<option value="1">1番</option>
+			<option value="2">2番</option>
+			<option value="3">3番</option>
+			<option value="4">4番</option>
+			<option value="5">5番</option>
+			<option value="6">6番</option>
+			<option value="7">7番</option>
+			<option value="8">8番</option>
+			<option value="9">9番</option>
+			<option value="10">10番</option>
+			<option value="11">11番</option>
+			<option value="12">12番</option>
+			<option value="13">13番</option>
+			<option value="14">14番</option>
+			<option value="15">15番</option>
+			<option value="16">16番</option>
+			<option value="17">17番</option>
+			<option value="18">18番</option>
+			<option value="19">19番</option>
+			<option value="20">20番</option>
+			<option value="21">21番</option>
+			<option value="22">22番</option>
+			<option value="23">23番</option>
+			<option value="24">24番</option>
+			<option value="25">25番</option>
+			<option value="26">26番</option>
+			<option value="27">27番</option>
+			<option value="28">28番</option>
+			<option value="29">29番</option>
+			<option value="30">30番</option>
+			<option value="31">31番</option>
+			<option value="32">32番</option>
+			<option value="33">33番</option>
+			<option value="34">34番</option>
+			<option value="35">35番</option>
+			<option value="36">36番</option>
+			<option value="37">37番</option>
+			<option value="38">38番</option>
+			<option value="39">39番</option>
+			<option value="40">40番</option>
+			<option value="41">41番</option>
+			<option value="42">42番</option>
+			<option value="43">43番</option>
+			<option value="44">44番</option>
+			<option value="45">45番</option>
+			<option value="46">46番</option>
+			<option value="47">47番</option>
+			<option value="48">48番</option>
+			<option value="49">49番</option>
+			<option value="50">50番</option>
+		</select>
+		<br />
+		体温ランダム生成(36.1 ～ 36.8): 
+		<input type="checkbox" id="randTemp" name="randTemp" />
+		<br />
+		<br />
+		<br />
+		<input type="button" id="issue" onclick="setIssue()" value="生成" />
+		URL: <input id="issueUrl" name="issueUrl" size="50"></textarea>
+		<script>
+			function setIssue() {
+				var url = new URL(window.location.href);
+				const grades = document.getElementById("grade");
+				url.searchParams.append('grade', grades.options[grades.selectedIndex].value);
+				const classes = document.getElementById("class");
+				url.searchParams.append('class', classes.options[classes.selectedIndex].value);
+				const numbers = document.getElementById("number");
+				url.searchParams.append('number', numbers.options[numbers.selectedIndex].value);
+				if (document.getElementById("randTemp").checked == true) {
+					url.searchParams.append('randTemp', true);
+				}
+				document.getElementById("issueUrl").value = url.toString();
+			}
+		</script>
+		<br />
+		<h1>説明</h1>
+		<h2>使い方</h2>
+		学年、組、出席番号を選択し、生成ボタンをクリックするとURLが生成されます。
+		<h2>生成されたURLについて</h2>
+		生成されたURLはブックマークやショートカットとして保存するなどしてください。
+		<br />そのURLにアクセスすると要素が入力済みとなっている"Google フォーム"へリダイレクトします。
+		<br /><br />
+		毎回、学年やら選んで提出するの面倒だなと思い、作ってみました
+		<br /><br /><br /><br /><br />
+		Licence: GPLv3, Language: JavaScript
+	</body>
 </html>
